@@ -1,0 +1,2 @@
+- **Implement deduplication**: Currently, no strategy is put in place for identifying duplicate entries from a single report.
+- **Implement chunking**: 
