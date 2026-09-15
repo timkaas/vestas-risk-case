@@ -11,7 +11,13 @@ from src.risk_pipeline.models import (
     RiskCategory,
     SectionSpec,
 )
-from src.risk_pipeline.parser import PDFReportParser, ReportParser, format_pages, format_sections
+from src.risk_pipeline.parser import (
+    PDFReportParser,
+    ReportParser,
+    format_pages,
+    format_sections,
+    parse_page_ranges,
+)
 from src.risk_pipeline.extractor import RiskExtractor, build_extraction_chain, EXTRACTION_PROMPT
 from src.risk_pipeline.pipeline import RiskExtractionPipeline
 
@@ -25,6 +31,7 @@ __all__ = [
     "ParsedSection",
     "ReportParser",
     "PDFReportParser",
+    "parse_page_ranges",
     "format_pages",
     "format_sections",
     "RiskExtractor",

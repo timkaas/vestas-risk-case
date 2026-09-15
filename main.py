@@ -6,7 +6,7 @@ import argparse
 import logging
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Sequence
 
 from dotenv import load_dotenv
 
@@ -25,7 +25,8 @@ from src.risk_pipeline.config import (
     DEFAULT_PDF_PATH,
     DEFAULT_TEMPERATURE,
 )
-from src.risk_pipeline.models import ExtractionResult
+from src.risk_pipeline.models import ExtractionResult, SectionSpec
+from src.risk_pipeline.parser import parse_page_ranges
 from src.risk_pipeline.pipeline import RiskExtractionPipeline
 from src.eval.evaluator import RiskPipelineEvaluator
 from src.eval.run_eval import print_evaluation_report, load_raw_markdown_pages
@@ -52,20 +53,26 @@ def run_pipeline(
     golden_set_path: Optional[str] = None,
     markdown_path: Optional[str] = None,
     show_progress: bool = True,
+    sections: Optional[Sequence[SectionSpec]] = None,
 ) -> ExtractionResult:
     """Run risk extraction pipeline and optionally save and evaluate output."""
     pipeline = RiskExtractionPipeline(
         model_name=model_name,
         temperature=temperature,
         max_concurrency=concurrency,
+        default_sections=sections,
     )
 
     print(f"\n🚀 Running Risk Intelligence Extraction Pipeline...")
     print(f"📄 Target Report: {pdf_path}")
     print(f"🤖 LLM Model:    {model_name} (temperature: {temperature})")
-    print(f"⚡ Concurrency:  {concurrency}\n")
+    print(f"⚡ Concurrency:  {concurrency}")
+    if sections:
+        section_desc = ", ".join(f"{s.name} (pp. {min(s.page_range)+1}-{max(s.page_range)+1})" if min(s.page_range) != max(s.page_range) else f"{s.name} (p. {min(s.page_range)+1})" for s in sections)
+        print(f"📑 Sections:     {section_desc}")
+    print()
 
-    result = pipeline.run(pdf_path=pdf_path, show_progress=show_progress)
+    result = pipeline.run(pdf_path=pdf_path, sections=sections, show_progress=show_progress)
 
     print(f"\n✅ Extraction complete! Identified {len(result.risks)} corporate risks.")
 
@@ -111,6 +118,13 @@ def main():
         type=str,
         default=str(DEFAULT_PDF_PATH),
         help=f"Path to input annual report PDF file. (Default: {DEFAULT_PDF_PATH})"
+    )
+    parser.add_argument(
+        "--sections", "-s",
+        nargs="+",
+        type=str,
+        default=None,
+        help="Page range(s) in the PDF to process (e.g. '50-51' '71-74' '118' or '50-51,71-74,118'). A range can also be a single page."
     )
     parser.add_argument(
         "--output", "-o",
@@ -172,6 +186,13 @@ def main():
         print(f"Error: PDF file '{pdf_file}' does not exist.", file=sys.stderr)
         sys.exit(1)
 
+    parsed_sections = None
+    if args.sections:
+        try:
+            parsed_sections = parse_page_ranges(args.sections)
+        except ValueError as e:
+            parser.error(f"Invalid --sections argument: {e}")
+
     result = run_pipeline(
         pdf_path=pdf_file,
         output_path=Path(args.output) if args.output else None,
@@ -182,6 +203,7 @@ def main():
         evaluate=args.eval,
         golden_set_path=args.golden_set,
         show_progress=True,
+        sections=parsed_sections,
     )
 
     if args.print_md:

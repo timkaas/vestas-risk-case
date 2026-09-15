@@ -18,6 +18,100 @@ from src.risk_pipeline.models import ParsedPage, ParsedSection, SectionSpec
 logger = logging.getLogger(__name__)
 
 
+def parse_page_ranges(
+    specs: Union[str, Sequence[Union[str, int, Sequence[int]]]]
+) -> List[(range, str)]:
+    """
+    Parse user-specified page ranges into a list of SectionSpec objects.
+
+    Supports:
+        - Single page numbers: '118', 118
+        - Page ranges: '50-51', '50..51', '50:51'
+        - Comma/space separated strings: '50-51, 71-74, 118'
+        - Lists of range strings or ints: ['50-51', '71-74', 118]
+
+    Note:
+        Page numbers provided in the input are 1-based report pages and are
+        converted to 0-based page indices in the resulting SectionSpec.page_range.
+
+    Args:
+        specs: String or sequence of strings/integers representing page ranges.
+
+    Returns:
+        List of SectionSpec objects with 0-based page_range.
+
+    Raises:
+        ValueError: If a page number or range format is invalid, or if page < 1, or start > end.
+    """
+    if isinstance(specs, str):
+        specs = [specs]
+
+    # Split any comma-separated or space-separated tokens within items
+    tokens: List[str] = []
+    for item in specs:
+        if isinstance(item, str):
+            parts = item.replace(",", " ").split()
+            tokens.extend(parts)
+        elif isinstance(item, int):
+            tokens.append(str(item))
+        elif isinstance(item, (list, tuple, range)):
+            tokens.extend(str(x) for x in item)
+        else:
+            tokens.append(str(item))
+
+    sections: List[SectionSpec] = []
+    for token in tokens:
+        token = token.strip().strip(",")
+        if not token:
+            continue
+
+        sep = None
+        for candidate in ["..", "-", ":"]:
+            if candidate in token:
+                sep = candidate
+                break
+
+        if sep is not None:
+            parts = token.split(sep, 1)
+            try:
+                start = int(parts[0].strip())
+                end = int(parts[1].strip())
+            except ValueError:
+                raise ValueError(f"Invalid page range format: '{token}'")
+
+            if start < 1:
+                raise ValueError(f"Page numbers must be >= 1, got start page {start}")
+            if end < start:
+                raise ValueError(f"Invalid page range '{token}': start page ({start}) cannot be greater than end page ({end})")
+
+            name = f"Pages {start}-{end}" if start != end else f"Page {start}"
+            sections.append(
+                SectionSpec(
+                    name=name,
+                    page_range=range(start - 1, end),
+                    description=f"Extracted from report {name.lower()}",
+                )
+            )
+        else:
+            try:
+                page = int(token)
+            except ValueError:
+                raise ValueError(f"Invalid page number format: '{token}'")
+
+            if page < 1:
+                raise ValueError(f"Page numbers must be >= 1, got page {page}")
+
+            sections.append(
+                SectionSpec(
+                    name=f"Page {page}",
+                    page_range=range(page - 1, page),
+                    description=f"Extracted from report page {page}",
+                )
+            )
+
+    return sections
+
+
 def format_pages(pages: Sequence[Union[Dict[str, Any], ParsedPage]]) -> str:
     """
     Format a sequence of pages into a readable string with explicit page markers.

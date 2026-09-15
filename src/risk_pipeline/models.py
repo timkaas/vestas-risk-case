@@ -5,6 +5,7 @@ Data models for the Risk Intelligence Extraction Pipeline.
 from __future__ import annotations
 
 import json
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Union
@@ -160,11 +161,11 @@ class ExtractionResult(BaseModel):
             )
         return "\n\n---\n\n".join(md_output)
 
-
-class SectionSpec(BaseModel):
+@dataclass
+class SectionSpec:
     """Specification of a document section to extract."""
     name: str = Field(description="Name or title of the section")
-    page_range: Sequence[int] = Field(description="0-based page indices or range in PDF")
+    page_range: range# Sequence[int] = Field(description="0-based page indices or range in PDF")
     description: Optional[str] = Field(None, description="Optional description of the section focus")
 
     @property
