@@ -1,0 +1,38 @@
+================================================================================
+ 🎯 RISK PIPELINE EVALUATION REPORT
+================================================================================
+📁 Golden Set Source:   /Users/timkaas/Projects/vestas-risk-case/eval/ground-truth.json
+📊 Extracted Input:      Live Extraction Pipeline on /Users/timkaas/Projects/vestas-risk-case/data/VestasAnnualReport2025.pdf (19 items)
+--------------------------------------------------------------------------------
+📈 SUMMARY METRICS:
+  • Total Golden Risks:       13
+  • Total Extracted Risks:    19
+  • Matched Golden Risks:     8 / 13
+  • Risk Extraction Recall:   62.0%  (target >= 75%)
+  • Category Accuracy:        38.0%  (target >= 70%)
+  • Mitigation Coverage:      57.0%  (target >= 70%)
+  • Grounding Score:          76.0%  (target >= 80%)
+--------------------------------------------------------------------------------
+🏁 Overall Status:           ❌ FAILED (Regression Detected)
+================================================================================
+
+🔍 MATCHED RISKS BREAKDOWN:
+Golden ID                    | Category Match   | Mitigation Match | Matched Title
+-------------------------------------------------------------------------------------
+risk_geopolitical_p51        | ✅ geopolitical   | ✅ Captured       | Geopolitical and Regulatory Risks
+risk_project_execution_p51   | ✅ operational    | ✅ Captured       | Project Execution Risks
+risk_cyber_attacks_p51       | ✅ cyber          | ✅ Captured       | Cybersecurity Risks
+risk_climate_mitigation_p71  | ❌ (climate vs financial) | ✅ Captured       | Transition Risks from Carbon Taxes 
+risk_non_recyclable_materials_p72 | ❌ (climate vs supply_chain) | ❌ Missed         | Resource Outflows and Circular Econ
+risk_health_safety_external_workforce_p73 | ❌ (supply_chain vs other) | ✅ Captured       | Supply Chain Worker Safety and Chil
+risk_land_impacts_p74        | ❌ (operational vs other) | ✅ Captured       | Impacts on Affected Communities and
+risk_energy_consumption_p85  | ❌ (climate vs operational) | ❌ Missed         | Operational Risks from Energy Consu
+
+⚠️ UNMATCHED GOLDEN RISKS (False Negatives / Missed):
+  - [risk_biodiversity_p72] Biodiversity (Category: climate, Pages: [72])
+  - [risk_health_safety_p73] Health and Safety Incidents (Category: operational, Pages: [73])
+  - [risk_child_forced_labour_p73] Child and Forced Labour (Category: supply_chain, Pages: [73])
+  - [risk_insufficient_market_conditions_p74] Insufficient Market Conditions (Category: market, Pages: [74])
+  - [risk_corruption_bribery_p74] Corruption and Bribery (Category: regulatory, Pages: [74])
+
+================================================================================
