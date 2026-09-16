@@ -28,7 +28,7 @@ uv run python -m spacy download en_core_web_sm
 ## 🛠️ Usage
 
 ### 1. Run the Risk Extraction Pipeline
-Extract structured risks from the Vestas Annual Report PDF (with an evaluation report to stdout):
+Extract structured risks from the Vestas Annual Report PDF:
 ```bash
 # Run extraction with default settings (outputs markdown summary to console)
 uv run main.py
