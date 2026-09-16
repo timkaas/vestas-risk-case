@@ -2,7 +2,8 @@ import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Dict, Any, Optional
-from src import RiskCategory, Risk
+
+from src.risk_pipeline.models import RiskCategory, Risk
 
 
 @dataclass

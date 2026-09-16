@@ -6,14 +6,10 @@ reliable in CI while still proving that each quality gate catches its intended
 failure mode.
 """
 import dataclasses
-import sys
-from pathlib import Path
 from collections import defaultdict
 from collections.abc import Callable
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from src.config import DEFAULT_GOLDEN_SET_PATH, EVAL_PATH
 from src.eval.evaluator import RiskPipelineEvaluator

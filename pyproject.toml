@@ -31,3 +31,4 @@ dev = [
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]
+pythonpath = ["src"]

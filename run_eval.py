@@ -10,10 +10,8 @@ import argparse
 import sys
 import pathlib as pl
 
-from src.config import DEFAULT_GOLDEN_SET_PATH, DEFAULT_PDF_PATH, PROJECT_ROOT, DEFAULT_SECTIONS_DEF_PATH, \
+from src.config import DEFAULT_GOLDEN_SET_PATH, DEFAULT_PDF_PATH, DEFAULT_SECTIONS_DEF_PATH, \
     DEFAULT_MODEL_NAME, DEFAULT_TEMPERATURE, DEFAULT_MAX_CONCURRENCY
-
-sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.eval.evaluator import RiskPipelineEvaluator, EvalScore
 from src.risk_pipeline.models import ExtractionResult
