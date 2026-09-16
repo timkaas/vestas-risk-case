@@ -5,7 +5,7 @@ Data models for the Risk Intelligence Extraction Pipeline.
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Union
@@ -90,13 +90,8 @@ class ExtractionResult(BaseModel):
         return self.model_dump(mode="json")
 
     def to_json(self, indent: int = 2) -> str:
-        """Serialize extraction result to formatted JSON string."""
+        """Serialize an extraction result to formatted JSON string."""
         return json.dumps(self.to_dict(), indent=indent, ensure_ascii=False)
-
-    def to_jsonl(self) -> str:
-        """Serialize risks to JSONL format (one JSON object per line)."""
-        lines = [json.dumps(r.model_dump(mode="json"), ensure_ascii=False) for r in self.risks]
-        return "\n".join(lines)
 
     def save_json(self, file_path: Union[str, Path], indent: int = 2) -> Path:
         """Save extraction result to a JSON file."""
@@ -105,42 +100,17 @@ class ExtractionResult(BaseModel):
         path.write_text(self.to_json(indent=indent), encoding="utf-8")
         return path
 
-    def save_jsonl(self, file_path: Union[str, Path]) -> Path:
-        """Save extraction result to a JSONL file."""
-        path = Path(file_path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(self.to_jsonl() + "\n", encoding="utf-8")
-        return path
 
     @classmethod
-    def from_file(cls, file_path: Union[str, Path]) -> "ExtractionResult":
-        """Load ExtractionResult from a JSON or JSONL file."""
-        path = Path(file_path)
-        if not path.exists():
-            raise FileNotFoundError(f"File not found: {path}")
-
-        content = path.read_text(encoding="utf-8").strip()
-        if not content:
-            return cls(risks=[])
-
-        try:
-            data = json.loads(content)
-            if isinstance(data, dict):
-                if "risks" in data and isinstance(data["risks"], list):
-                    return cls.model_validate(data)
-                return cls(risks=[Risk.model_validate(data)])
-            elif isinstance(data, list):
-                return cls(risks=[Risk.model_validate(item) for item in data])
-        except Exception:
-            pass
-
-        # Try JSONL
-        risks = []
-        for line in content.splitlines():
-            line = line.strip()
-            if line and not line.startswith("//"):
-                risks.append(Risk.model_validate_json(line))
-        return cls(risks=risks)
+    def from_file(cls, file_path: Path) -> ExtractionResult:
+        """Load ExtractionResult from a JSON file."""
+        content = file_path.read_text(encoding="utf-8").strip()
+        data = json.loads(content)
+        if isinstance(data, dict):
+            return cls.model_validate(data)
+        else:
+            # Assumed a list of risks
+            return cls(risks=[Risk.model_validate(item) for item in data])
 
     def _repr_markdown_(self) -> str:
         """Rich Jupyter notebook / markdown representation."""
@@ -161,28 +131,39 @@ class ExtractionResult(BaseModel):
             )
         return "\n\n---\n\n".join(md_output)
 
-@dataclass
+@dataclass(frozen=True)
 class SectionSpec:
     """Specification of a document section to extract."""
-    name: str = Field(description="Name or title of the section")
-    page_range: range# Sequence[int] = Field(description="0-based page indices or range in PDF")
-    description: Optional[str] = Field(None, description="Optional description of the section focus")
+    name: str
+    page_range: range
+    description: Optional[str] = None
 
     @property
     def pages(self) -> List[int]:
         return list(self.page_range)
 
 
-class ParsedPage(BaseModel):
+@dataclass(frozen=True)
+class ReportDefinition:
+    """Typed representation of a report-definition JSON input file."""
+    report_path: Path
+    sections: List[SectionSpec]
+    source_path: Optional[Path] = None
+
+@dataclass(frozen=True)
+class ParsedPage:
     """Parsed single page content and metadata."""
-    page_number: int = Field(description="1-based document page number")
-    text: str = Field(description="Extracted markdown or text content of the page")
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Additional page metadata")
+    page_number: int
+    text: str
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
-
-class ParsedSection(BaseModel):
+@dataclass(frozen=True)
+class ParsedSection:
     """Structured representation of a parsed section containing one or more pages."""
-    name: str = Field(description="Name of the section")
-    page_numbers: List[int] = Field(description="List of 1-based page numbers in this section")
-    pages: List[ParsedPage] = Field(default_factory=list, description="List of parsed pages")
-    formatted_content: str = Field(description="Formatted markdown content ready for LLM ingestion")
+    name: str
+    page_numbers: Sequence[int]
+    pages: List[ParsedPage]
+
+    @property
+    def formatted_content(self) -> str:
+        return "\n\n".join(f"=== PDF PAGE {page.page_number} ===\n\n{page.text.strip()}" for page in self.pages)

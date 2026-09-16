@@ -1,335 +1,99 @@
-"""
-PDF and Markdown parser for extracting structured report sections and pages.
-"""
-
-from __future__ import annotations
-
+"""Load report JSON and extract its configured PDF pages."""
 import itertools
-import logging
+import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Dict, List, Sequence, Union
 
 import pymupdf
 import pymupdf4llm
 
-from src.risk_pipeline.config import DEFAULT_SECTIONS_OF_INTEREST
-from src.risk_pipeline.models import ParsedPage, ParsedSection, SectionSpec
-
-logger = logging.getLogger(__name__)
+from src.risk_pipeline.models import ReportDefinition, SectionSpec, ParsedPage, ParsedSection
 
 
-def parse_page_ranges(
-    specs: Union[str, Sequence[Union[str, int, Sequence[int]]]]
-) -> List[(range, str)]:
-    """
-    Parse user-specified page ranges into a list of SectionSpec objects.
-
-    Supports:
-        - Single page numbers: '118', 118
-        - Page ranges: '50-51', '50..51', '50:51'
-        - Comma/space separated strings: '50-51, 71-74, 118'
-        - Lists of range strings or ints: ['50-51', '71-74', 118]
-
-    Note:
-        Page numbers provided in the input are 1-based report pages and are
-        converted to 0-based page indices in the resulting SectionSpec.page_range.
-
-    Args:
-        specs: String or sequence of strings/integers representing page ranges.
-
-    Returns:
-        List of SectionSpec objects with 0-based page_range.
-
-    Raises:
-        ValueError: If a page number or range format is invalid, or if page < 1, or start > end.
-    """
-    if isinstance(specs, str):
-        specs = [specs]
-
-    # Split any comma-separated or space-separated tokens within items
-    tokens: List[str] = []
-    for item in specs:
-        if isinstance(item, str):
-            parts = item.replace(",", " ").split()
-            tokens.extend(parts)
-        elif isinstance(item, int):
-            tokens.append(str(item))
-        elif isinstance(item, (list, tuple, range)):
-            tokens.extend(str(x) for x in item)
-        else:
-            tokens.append(str(item))
-
-    sections: List[SectionSpec] = []
-    for token in tokens:
-        token = token.strip().strip(",")
-        if not token:
-            continue
-
-        sep = None
-        for candidate in ["..", "-", ":"]:
-            if candidate in token:
-                sep = candidate
-                break
-
-        if sep is not None:
-            parts = token.split(sep, 1)
-            try:
-                start = int(parts[0].strip())
-                end = int(parts[1].strip())
-            except ValueError:
-                raise ValueError(f"Invalid page range format: '{token}'")
-
-            if start < 1:
-                raise ValueError(f"Page numbers must be >= 1, got start page {start}")
-            if end < start:
-                raise ValueError(f"Invalid page range '{token}': start page ({start}) cannot be greater than end page ({end})")
-
-            name = f"Pages {start}-{end}" if start != end else f"Page {start}"
-            sections.append(
-                SectionSpec(
-                    name=name,
-                    page_range=range(start - 1, end),
-                    description=f"Extracted from report {name.lower()}",
-                )
-            )
-        else:
-            try:
-                page = int(token)
-            except ValueError:
-                raise ValueError(f"Invalid page number format: '{token}'")
-
-            if page < 1:
-                raise ValueError(f"Page numbers must be >= 1, got page {page}")
-
-            sections.append(
-                SectionSpec(
-                    name=f"Page {page}",
-                    page_range=range(page - 1, page),
-                    description=f"Extracted from report page {page}",
-                )
-            )
-
-    return sections
+def _page_range(value: str) -> range:
+    """Turn ``'50-51'`` (or ``'118'``) into zero-based PDF page indices."""
+    try:
+        start, _, end = value.replace("..", "-").replace(":", "-").partition("-")
+        first = int(start)
+        last = int(end or start)
+    except ValueError as exc:
+        raise ValueError(f"Invalid page range: {value!r}") from exc
+    if first < 1 or last < first:
+        raise ValueError(f"Invalid page range: {value!r}")
+    return range(first - 1, last)
 
 
-def format_pages(pages: Sequence[Union[Dict[str, Any], ParsedPage]]) -> str:
-    """
-    Format a sequence of pages into a readable string with explicit page markers.
+def parse_report_definition(path: Path) -> ReportDefinition:
+    """Parse the small ``report`` / ``sections`` JSON definition file."""
+    data = json.loads(path.read_text(encoding="utf-8"))
+    report_path = Path(data["report"])
+    if not report_path.is_absolute():
+        report_path = path.parent / report_path
+    sections = [
+        SectionSpec(section["name"], _page_range(str(section["pages"])))
+        for section in data["sections"]
+    ]
+    return ReportDefinition(report_path, sections, path)
 
-    Args:
-        pages: List of page dictionaries (from pymupdf4llm) or ParsedPage objects.
 
-    Returns:
-        Formatted markdown string with '=== PDF PAGE X ===' delimiters.
-    """
-    formatted_chunks: List[str] = []
-    for page in pages:
-        if isinstance(page, ParsedPage):
-            page_num = page.page_number
-            text = page.text
-        elif isinstance(page, dict):
-            page_num = page.get("metadata", {}).get("page_number", page.get("page_number", "Unknown"))
-            text = page.get("text", "")
-        else:
-            continue
-        formatted_chunks.append(f"=== PDF PAGE {page_num} ===\n\n{text.strip()}")
-    return "\n\n".join(formatted_chunks)
+def parse_page_ranges(values: Union[str, Sequence[Union[str, int]]]) -> List[SectionSpec]:
+    """Support the existing ``--sections`` CLI shorthand."""
+    values = [values] if isinstance(values, str) else values
+    ranges = [item for value in values for item in str(value).replace(",", " ").split()]
+    return [
+        SectionSpec(
+            f"Page {item}" if "-" not in item and ":" not in item and ".." not in item else f"Pages {item}",
+            _page_range(item),
+        )
+        for item in ranges
+    ]
+
+
+def format_pages(pages: Sequence[ParsedPage]) -> str:
+    return "\n\n".join(f"=== PDF PAGE {page.page_number} ===\n\n{page.text.strip()}" for page in pages)
 
 
 def format_sections(sections: Sequence[ParsedSection]) -> str:
-    """
-    Format multiple parsed sections into a single markdown document with section headers.
-
-    Args:
-        sections: Sequence of ParsedSection objects.
-
-    Returns:
-        Formatted string containing all sections and page markers.
-    """
-    return "\n\n".join(
-        f"# {sec.name}\n\n{sec.formatted_content}"
-        for sec in sections
-    )
-
+    return "\n\n".join(f"# {section.name}\n\n{section.formatted_content()}" for section in sections)
 
 class ReportParser:
-    """
-    Parser for corporate annual reports and disclosures.
-    Converts PDF documents and targeted page ranges into structured markdown sections.
-    """
-
-    def __init__(self, default_sections: Optional[Sequence[SectionSpec]] = None):
-        """
-        Initialize report parser.
-
-        Args:
-            default_sections: Optional default section specifications to target.
-        """
-        self.default_sections = list(default_sections) if default_sections is not None else DEFAULT_SECTIONS_OF_INTEREST
+    def __init__(self, split=False):
+        self.split = split
 
     def parse_pdf_sections(
         self,
         pdf_path: Union[str, Path],
-        sections: Optional[Sequence[SectionSpec]] = None,
+        sections: Sequence[SectionSpec],
         show_progress: bool = False,
     ) -> List[ParsedSection]:
-        """
-        Extract and parse specified report sections from a PDF file.
+        assert not self.split
 
-        Args:
-            pdf_path: Path to the source PDF report.
-            sections: Specific sections to extract. If None, uses default sections.
-            show_progress: Whether to show pymupdf4llm progress bar.
+        sections = list(sections)
 
-        Returns:
-            List of ParsedSection objects ready for LLM extraction.
-        """
-        pdf_file = Path(pdf_path)
-        if not pdf_file.exists():
-            raise FileNotFoundError(f"PDF report not found at: {pdf_file}")
+        with pymupdf.open(pdf_path) as pdf:
+            pages = [page for section in sections for page in section.page_range]
+            if not pages:
+                return []
+            md = pymupdf4llm.to_markdown(pdf, pages=pages, header=False, footer=False, page_chunks=True,
+                                         show_progress=show_progress)
 
-        target_sections = list(sections) if sections is not None else self.default_sections
-        if not target_sections:
-            raise ValueError("No sections specified for parsing.")
+        # Reconstruct sections
+        it = iter(md)
+        return [
+            ParsedSection(name=section.name, pages=[
+                ParsedPage(page_number=chunk['metadata']['page_number'], text=chunk["text"], metadata=chunk.get("metadata", {}))
+                for chunk in list(itertools.islice(it, len(section.page_range)))
+            ], page_numbers=[p + 1 for p in section.page_range])
+            for section in sections
+        ]
 
-        # Flatten 0-based page indices in sequential order
-        ordered_pages: List[int] = []
-        section_page_counts: List[Tuple[SectionSpec, int]] = []
-        for sec in target_sections:
-            sec_pages = list(sec.page_range)
-            ordered_pages.extend(sec_pages)
-            section_page_counts.append((sec, len(sec_pages)))
-
-        logger.info(f"Parsing {len(ordered_pages)} pages across {len(target_sections)} sections from {pdf_file.name}")
-
-        # Open PDF document
-        doc = pymupdf.open(str(pdf_file))
-        try:
-            # Validate page boundaries
-            max_page = doc.page_count
-            for p in ordered_pages:
-                if p < 0 or p >= max_page:
-                    raise IndexError(f"Page index {p} is out of bounds for document with {max_page} pages.")
-
-            # Extract markdown page chunks via pymupdf4llm
-            raw_page_chunks: List[Dict[str, Any]] = pymupdf4llm.to_markdown(
-                doc,
-                pages=ordered_pages,
-                header=False,
-                footer=False,
-                page_chunks=True,
-                show_progress=show_progress,
-            )
-        finally:
-            doc.close()
-
-        # Reconstruct sections from page chunks
-        it = iter(raw_page_chunks)
-        parsed_sections: List[ParsedSection] = []
-
-        for sec, count in section_page_counts:
-            sec_chunks = list(itertools.islice(it, count))
-            parsed_pages: List[ParsedPage] = []
-            page_numbers: List[int] = []
-
-            for chunk in sec_chunks:
-                meta = chunk.get("metadata", {})
-                # pymupdf4llm populates 1-based page_number in metadata
-                p_num = meta.get("page_number")
-                if p_num is None:
-                    # Fallback to page index + 1
-                    p_num = meta.get("page", 0) + 1
-                page_numbers.append(int(p_num))
-                parsed_pages.append(
-                    ParsedPage(
-                        page_number=int(p_num),
-                        text=chunk.get("text", ""),
-                        metadata=meta,
-                    )
-                )
-
-            formatted_content = format_pages(parsed_pages)
-
-            parsed_sections.append(
-                ParsedSection(
-                    name=sec.name,
-                    page_numbers=page_numbers,
-                    pages=parsed_pages,
-                    formatted_content=formatted_content,
-                )
-            )
-
-        return parsed_sections
-
-    def load_page_text_map(
-        self,
-        pdf_path: Optional[Union[str, Path]] = None,
-        md_path: Optional[Union[str, Path]] = None,
-        sections: Optional[Sequence[SectionSpec]] = None,
-    ) -> Dict[int, str]:
-        """
-        Generate a mapping of {page_number: page_text} for grounding / evidence verification.
-
-        Args:
-            pdf_path: Optional path to PDF to extract live pages.
-            md_path: Optional path to fallback markdown file.
-            sections: Optional sections to extract from PDF.
-
-        Returns:
-            Dictionary mapping 1-based page numbers to their full text content.
-        """
-        page_map: Dict[int, str] = {}
-
-        if pdf_path and Path(pdf_path).exists():
-            parsed_sections = self.parse_pdf_sections(pdf_path, sections=sections)
-            for sec in parsed_sections:
-                for page in sec.pages:
-                    page_map[page.page_number] = page.text
-            return page_map
-
-        if md_path and Path(md_path).exists():
-            content = Path(md_path).read_text(encoding="utf-8")
-            # Populate fallback map
-            for p in [50, 51, 71, 72, 73, 74, 85, 86, 87, 88, 89, 90, 91, 92, 117, 118]:
-                page_map[p] = content
-
-        return page_map
-
-    def export_extracted_pdf(
-        self,
-        source_pdf: Union[str, Path],
-        output_pdf: Union[str, Path],
-        sections: Optional[Sequence[SectionSpec]] = None,
-    ) -> Path:
-        """
-        Extract only target pages into a compact standalone PDF file.
-
-        Args:
-            source_pdf: Path to original PDF.
-            output_pdf: Path for destination extracted PDF.
-            sections: Sections defining the page ranges to extract.
-
-        Returns:
-            Path to the newly saved PDF.
-        """
-        target_sections = list(sections) if sections is not None else self.default_sections
-        doc_src = pymupdf.open(str(source_pdf))
-        doc_dst = pymupdf.open()
-        try:
-            for sec in target_sections:
-                for page_num in sec.page_range:
-                    page_src = doc_src[page_num]
-                    page_dst = doc_dst.new_page(-1, page_src.rect.width, page_src.rect.height)
-                    page_dst.show_pdf_page(page_src.rect, doc_src, page_num)
-
-            out_path = Path(output_pdf)
-            out_path.parent.mkdir(parents=True, exist_ok=True)
-            doc_dst.save(str(out_path), garbage=3, deflate=True)
-            return out_path
-        finally:
-            doc_src.close()
-            doc_dst.close()
+    def load_page_text_map(self, pdf_path: Path, sections: Sequence[SectionSpec]) -> Dict[int, str]:
+        return {
+            page.page_number: page.text
+            for section in self.parse_pdf_sections(pdf_path, sections)
+            for page in section.pages
+        }
 
 
-# Alias for backwards compatibility
 PDFReportParser = ReportParser
+parse_from_json = parse_report_definition

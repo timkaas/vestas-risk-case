@@ -1,0 +1,436 @@
+{
+  "risks": [
+    {
+      "title": "Geopolitical and Regulatory Risks",
+      "description": "Vestas faces significant challenges due to shifting geopolitical tensions and regulatory changes, including conflicts in Ukraine and the Middle East, and trade tensions between major economies. These factors disrupt regional stability, affect global supply chains, and reshape the regulatory landscape, complicating global operations and increasing competition in the clean-tech sector.",
+      "category": "geopolitical",
+      "section": "Risk Management",
+      "pages": [
+        51
+      ],
+      "mitigation": "We manage geopolitical risks by continuously monitoring global developments and implementing appropriate mitigations. By maintaining a global and regionalised manufacturing footprint, Vestas can effectively respond to geopolitical shifts and regulatory changes.",
+      "evidence": [
+        {
+          "page": 51,
+          "quote": "In 2025, Vestas continued to navigate significant challenges arising from shifting geopolitical tensions across the world. Conflicts in Ukraine and the Middle East continued to disrupt regional stability, affecting global supply chains and business operations."
+        },
+        {
+          "page": 51,
+          "quote": "Trade tensions between major economies have intensified, leading to tariffs, sanctions, export controls, and targeted restrictions on e.g. critical materials which complicate global operations."
+        }
+      ]
+    },
+    {
+      "title": "Project Execution Risks",
+      "description": "Vestas faces challenges in executing complex onshore and offshore projects, which are affected by delays in production capacity ramp-up, quality control issues, and supply chain disruptions. These challenges can lead to delivery delays, cost overruns, and margin erosion, impacting Vestas' competitiveness in the global wind market.",
+      "category": "operational",
+      "section": "Risk Management",
+      "pages": [
+        51
+      ],
+      "mitigation": "We mitigate execution risks through project governance, enhanced planning functions, and continuous alignment between commercial and delivery teams. We invest in scalable manufacturing capacity and maintain close coordination with suppliers to secure timely component availability.",
+      "evidence": [
+        {
+          "page": 51,
+          "quote": "Project execution at Vestas involves delivering complex onshore and offshore projects within specified parameters relating to quality, cost, and timeline."
+        },
+        {
+          "page": 51,
+          "quote": "Execution is affected by delays in production capacity ramp-up, quality control issues during scaling, and supply chain disruptions."
+        }
+      ]
+    },
+    {
+      "title": "Cybersecurity Risks",
+      "description": "Vestas' digital and critical assets are exposed to cyber attacks, which can have severe implications for both the company and the societies relying on its energy solutions. Cyber-threat actors, including politically motivated ones, may target Vestas to disrupt energy production, potentially causing significant economic loss and reputational damage.",
+      "category": "cyber",
+      "section": "Risk Management",
+      "pages": [
+        51
+      ],
+      "mitigation": "We are developing cyber security services aimed at helping our customers navigate cyber risks effectively, fulfil industry requirements and standards, and uphold their responsibilities. During 2025, our cyber security efforts were effective and no critical cyber security incidents took place.",
+      "evidence": [
+        {
+          "page": 51,
+          "quote": "Vestas’ digital and other critical assets are exposed to cyber attacks. A cyber attack may have dual implications for both Vestas as a company and for the societies that our energy solutions serve."
+        },
+        {
+          "page": 51,
+          "quote": "A successful cyber attack on Vestas’ energy solutions and our infrastructures might result in significant economic loss and reputational damage."
+        }
+      ]
+    },
+    {
+      "title": "Climate Change Mitigation",
+      "description": "Vestas' operations and value chain contribute to GHG emissions, negatively impacting the global climate and environment. This presents a risk as well as an opportunity to offer low-emission materials, enhancing the company's value proposition.",
+      "category": "climate",
+      "section": "Material Risk",
+      "pages": [
+        71
+      ],
+      "mitigation": "Offering low-emission materials to improve value proposition.",
+      "evidence": [
+        {
+          "page": 71,
+          "quote": "Scope 1, 2, & 3 GHG emissions (actual) The GHG emissions from Vestas’ own operations and value chain have a negative impact on the global climate and environment."
+        }
+      ]
+    },
+    {
+      "title": "Energy Consumption",
+      "description": "Fossil energy used in manufacturing, construction, and service of turbines negatively impacts the global climate and environment. This consumption is considered a risk, although currently scored as immaterial.",
+      "category": "climate",
+      "section": "Material Risk",
+      "pages": [
+        71
+      ],
+      "mitigation": null,
+      "evidence": [
+        {
+          "page": 71,
+          "quote": "Energy consumption (actual) Fossil energy consumed during manufacturing, construction, and service of turbines has a negative impact on the global climate and environment."
+        }
+      ]
+    },
+    {
+      "title": "Carbon Taxes and Tariffs",
+      "description": "High carbon taxes and tariffs increase the cost of GHG-intensive materials like steel, raising the overall production costs for wind turbines.",
+      "category": "financial",
+      "section": "Material Risk",
+      "pages": [
+        71
+      ],
+      "mitigation": null,
+      "evidence": [
+        {
+          "page": 71,
+          "quote": "High carbon taxes and tariffs increase the price of GHG intense materials such as steel, increasing the overall cost to produce wind turbines."
+        }
+      ]
+    },
+    {
+      "title": "Biodiversity Loss",
+      "description": "GHG emissions from Vestas' supply chain negatively impact biodiversity and ecosystems, although biodiversity-related risks are currently scored as immaterial.",
+      "category": "climate",
+      "section": "Material Risk",
+      "pages": [
+        72
+      ],
+      "mitigation": null,
+      "evidence": [
+        {
+          "page": 72,
+          "quote": "The GHG emissions originating in our supply chain from the extraction, production and transportation of raw materials and products have a negative impact on biodiversity and ecosystems"
+        }
+      ]
+    },
+    {
+      "title": "Non-recyclable Materials",
+      "description": "Non-recyclable materials in turbines may be landfilled or incinerated, increasing the need for virgin materials and negatively impacting the environment. Offering recyclable blade solutions presents a financial opportunity.",
+      "category": "climate",
+      "section": "Material Risk",
+      "pages": [
+        72
+      ],
+      "mitigation": "Offering blade circularity solutions to improve value proposition.",
+      "evidence": [
+        {
+          "page": 72,
+          "quote": "Non-recyclable materials (actual) Non-recyclable materials in turbines might be landfilled or incinerated and increase the need for virgin materials, which has a negative impact on the environment."
+        }
+      ]
+    },
+    {
+      "title": "Raw Material Extraction",
+      "description": "The extraction and production of metals and other raw materials for turbines negatively impact the climate and environment. These resource inflow-related risks are currently scored as immaterial.",
+      "category": "supply_chain",
+      "section": "Material Risk",
+      "pages": [
+        72
+      ],
+      "mitigation": null,
+      "evidence": [
+        {
+          "page": 72,
+          "quote": "Raw materials required for turbines (actual) Extraction and production of metals and other raw materials has a negative impact on the climate and environment."
+        }
+      ]
+    },
+    {
+      "title": "Waste Generation",
+      "description": "Waste generated in Vestas' operations negatively impacts the environment, although waste-related risks are currently scored as immaterial.",
+      "category": "operational",
+      "section": "Material Risk",
+      "pages": [
+        72
+      ],
+      "mitigation": null,
+      "evidence": [
+        {
+          "page": 72,
+          "quote": "Waste generation (actual) Waste generated in our own operations has a negative impact on the environment."
+        }
+      ]
+    },
+    {
+      "title": "Health and Safety Incidents",
+      "description": "Health and safety incidents among Vestas' workforce can lead to delays, lost work hours, and compensation costs, posing a financial risk.",
+      "category": "operational",
+      "section": "Material Risk",
+      "pages": [
+        73
+      ],
+      "mitigation": null,
+      "evidence": [
+        {
+          "page": 73,
+          "quote": "Health and safety incidents of own workforce (actual) The negative impact related to health and safety incidents."
+        }
+      ]
+    },
+    {
+      "title": "Child and Forced Labour",
+      "description": "There is a risk of forced and child labour in Vestas' supply chain, which could lead to fines and reputational damage.",
+      "category": "supply_chain",
+      "section": "Material Risk",
+      "pages": [
+        73
+      ],
+      "mitigation": null,
+      "evidence": [
+        {
+          "page": 73,
+          "quote": "Child and forced labour (potential) Risk of forced and child labour in our supply chain."
+        }
+      ]
+    },
+    {
+      "title": "Land-related Impacts on Communities",
+      "description": "Land-use restrictions during wind farm construction can lead to temporary negative impacts, such as physical and economic displacement of local communities.",
+      "category": "geopolitical",
+      "section": "Material Risk",
+      "pages": [
+        74
+      ],
+      "mitigation": null,
+      "evidence": [
+        {
+          "page": 74,
+          "quote": "Land-related impacts (potential) Land-use restrictions during wind farm construction leading to a temporary negative impact in the form of physical and economic displacement (e.g income losses) of local communities."
+        }
+      ]
+    },
+    {
+      "title": "Cyber Security Incidents",
+      "description": "Cyber attacks on wind farm infrastructure could cause power outages and increase electricity prices, negatively impacting society. Such incidents might also disrupt business operations and expose intellectual property.",
+      "category": "cyber",
+      "section": "Material Risk",
+      "pages": [
+        74
+      ],
+      "mitigation": null,
+      "evidence": [
+        {
+          "page": 74,
+          "quote": "Cyber security incidents (entity-specific, potential) Cyber attacks on wind farm infrastructure might cause power outages and increase in electricity prices, negatively impacting society and people"
+        }
+      ]
+    },
+    {
+      "title": "Corruption and Bribery",
+      "description": "Vestas' global presence increases the risk of exposure to corruption and bribery, which could lead to legal and reputational risks.",
+      "category": "regulatory",
+      "section": "Material Risk",
+      "pages": [
+        74
+      ],
+      "mitigation": null,
+      "evidence": [
+        {
+          "page": 74,
+          "quote": "Risk of corruption and bribery Vestas’ global presence presents an increased risk of exposure to corruption and bribery."
+        }
+      ]
+    },
+    {
+      "title": "GHG Emissions Impact",
+      "description": "The Greenhouse Gas (GHG) emissions from Vestas' operations and supply chain have a material negative impact on the climate. In 2025, 109 kt of combined Scope 1 and 2 emissions were emitted, primarily driven by fossil fuels and electricity. Scope 3 emissions, which comprise more than 99 percent of total emissions, are driven by purchased goods and transport.",
+      "category": "climate",
+      "section": "Climate Change",
+      "pages": [
+        85,
+        89
+      ],
+      "mitigation": "To mitigate the impact of Scope 1, 2, and 3 GHG emissions, Vestas has set GHG emission reduction targets and established a transition plan for climate change mitigation, with actions implemented across the organisation.",
+      "evidence": [
+        {
+          "page": 85,
+          "quote": "The Greenhouse Gas (GHG) emissions from our own operations and supply chain have a material negative impact on the climate. In 2025, 109 kt of combined Scope 1 and 2 emissions were emitted."
+        },
+        {
+          "page": 89,
+          "quote": "In 2025, Vestas’ total GHG emissions were 9.45 Mt CO2e using the market-based method, and 9.50 Mt CO2e using the location-based method."
+        }
+      ]
+    },
+    {
+      "title": "Energy Consumption Impact",
+      "description": "Energy consumption during the manufacture of wind turbine components and the construction and servicing of wind parks relies on fossil fuels, leading to resource depletion and emissions that negatively impact the climate. Reducing reliance on fossil fuels is part of Vestas' strategy to cut emissions from its own operations in half by 2030.",
+      "category": "climate",
+      "section": "Climate Change",
+      "pages": [
+        85,
+        88
+      ],
+      "mitigation": "Vestas is transitioning to renewable energy across its operations and has sourced 100 percent renewable electricity globally since 2020.",
+      "evidence": [
+        {
+          "page": 85,
+          "quote": "Energy is consumed during the manufacture of wind turbine components and the construction and servicing of wind parks. Energy consumption in our own operations relies on fossil fuels, leading to resource depletion and emissions that negatively impact the climate."
+        },
+        {
+          "page": 88,
+          "quote": "Our Scope 1 and 2 decarbonisation lever is aligned with our target boundary, which covers 100 percent of our Scope 1 and 2 emissions across all geographies in our own operations."
+        }
+      ]
+    },
+    {
+      "title": "Carbon Taxes and Tariffs",
+      "description": "Political and market transition risks, such as carbon taxes, can financially impact Vestas. High carbon taxes and tariffs will increase the cost of GHG-intensive materials like steel, raising the overall cost of wind turbines.",
+      "category": "financial",
+      "section": "Climate Change",
+      "pages": [
+        85,
+        86
+      ],
+      "mitigation": "Vestas is working with suppliers to reduce supply chain Scope 3 GHG emissions and has secured additional orders for low-emission steel.",
+      "evidence": [
+        {
+          "page": 85,
+          "quote": "Political and market transition risks, such as carbon taxes, can financially impact Vestas. High carbon taxes and tariffs will increase the cost of GHG-intensive materials like steel, raising the overall cost of wind turbines."
+        },
+        {
+          "page": 86,
+          "quote": "To drive future reductions in our supply chain emissions, we secured additional orders for low-emission steel in 2025."
+        }
+      ]
+    },
+    {
+      "title": "Growth Rate of the Wind Industry",
+      "description": "Governments worldwide have set progressive targets for the expansion of wind energy to meet the temperature threshold of the Paris Agreement. More than 980 GW of new onshore and offshore capacity is expected to be added from 2025 to 2030, reflecting a compound annual growth rate of 8.8 percent for that period.",
+      "category": "market",
+      "section": "Climate Change",
+      "pages": [
+        85
+      ],
+      "mitigation": null,
+      "evidence": [
+        {
+          "page": 85,
+          "quote": "Governments worldwide have set progressive targets for the expansion of wind energy to meet the temperature threshold of the Paris Agreement. More than 980 GW of new onshore and offshore capacity is expected to be added from 2025 to 2030, reflecting a compound annual growth rate of 8.8 percent for that period."
+        }
+      ]
+    },
+    {
+      "title": "Physical Climate Risks",
+      "description": "Physical risks like water stress and extreme rainfall may impact operations across Vestas' value chain, but the impact is not expected to materially delay or damage assets and therefore is not financially material.",
+      "category": "climate",
+      "section": "Climate Change",
+      "pages": [
+        86
+      ],
+      "mitigation": "Vestas has organisational and strategic priorities in place to address acute and chronic climate risks that could disrupt business activities.",
+      "evidence": [
+        {
+          "page": 86,
+          "quote": "While physical risks like water stress and extreme rainfall may impact operations across our value chain, the impact is not expected to materially delay or damage assets and therefore is not financially material."
+        }
+      ]
+    },
+    {
+      "title": "Decarbonisation of High-Emission Materials",
+      "description": "Decarbonising high-emission materials used in wind turbines is critical to meet Scope 3 emission reduction targets. Steel and iron have the greatest impact, accounting for about 41 percent of Scope 3 emissions.",
+      "category": "supply_chain",
+      "section": "Climate Change",
+      "pages": [
+        85,
+        87
+      ],
+      "mitigation": "Vestas is building a value chain for low-emission materials in collaboration with suppliers and customers, enhancing sustainability and enabling Vestas to win tenders with non-price criteria.",
+      "evidence": [
+        {
+          "page": 85,
+          "quote": "Decarbonising high-emission materials used in our wind turbines is critical to meet our Scope 3 emission reduction target. Steel and iron have the greatest impact, accounting for about 41 percent of our Scope 3 emissions."
+        },
+        {
+          "page": 87,
+          "quote": "To reduce Scope 3 emissions, we prioritise gathering sustainability data from suppliers, focusing on high-emitting sources like steel and blade production."
+        }
+      ]
+    },
+    {
+      "title": "Cyber Security Incidents",
+      "description": "Cyber security incidents pose a risk to Vestas' ability to control power plants, impacting customers and society. The primary risk arises from politically or financially motivated threat actors seeking to trigger power outages, which could lead to contractual breaches and higher electricity prices for consumers.",
+      "category": "cyber",
+      "section": "Cyber Security",
+      "pages": [
+        118
+      ],
+      "mitigation": "Vestas has increased investment in cyber security across R&D, service, and digital infrastructure, and contributes to open-source initiatives for cyber risk quantification. The Cyber Risk Management Strategy launched in 2024 ensures systematic identification, assessment, and mitigation of cyber risks.",
+      "evidence": [
+        {
+          "page": 118,
+          "quote": "The potential impact of a cyber security incident was added to our reporting scope since the previous reporting period. The impact is to be understood as the disruption of Vestas’ ability to control power plants, which directly impacts customers, and, ultimately, society."
+        },
+        {
+          "page": 118,
+          "quote": "Since customers may face contractual obligations to supply power to the grid, this creates indirect consequences for electricity consumers through potential outages or higher electricity prices."
+        },
+        {
+          "page": 118,
+          "quote": "Over the past three years, we have increased investment in cyber security across R&D, service, and digital infrastructure to ensure we contribute to energy security and empower customers to better manage their own cyber risks."
+        }
+      ]
+    },
+    {
+      "title": "Geopolitical Tensions Amplifying Cyber Risks",
+      "description": "Geopolitical tensions increase the risk of cyber security incidents, as Vestas is a potential target for actors aiming to impact customers and power producers. This risk is exacerbated by the company's digitally connected and geographically dispersed wind turbines.",
+      "category": "geopolitical",
+      "section": "Cyber Security",
+      "pages": [
+        118
+      ],
+      "mitigation": "Vestas engages in shaping cyber legislation and integrates cyber risk management into its broader value creation strategy. The Cyber Risk Management Strategy applies enterprise-wide, ensuring systematic risk management.",
+      "evidence": [
+        {
+          "page": 118,
+          "quote": "Geopolitical tensions amplify the risk of cyber security incidents, as Vestas represents a potential target for actors seeking to impact our customers and power producers."
+        },
+        {
+          "page": 118,
+          "quote": "Our digitally connected and geographically dispersed wind turbines are essential to deliver sustainable energy but also represent potential targets for cyber-attacks."
+        }
+      ]
+    },
+    {
+      "title": "Cyber Risk Management Strategy",
+      "description": "Vestas' Cyber Risk Management Strategy is a comprehensive approach to managing cyber risks across strategic, customer, manufacturing, and operational domains. It aims to protect stakeholders and enhance confidence by integrating cyber risk management into the company's value creation strategy.",
+      "category": "cyber",
+      "section": "Cyber Security",
+      "pages": [
+        118
+      ],
+      "mitigation": "The strategy is structured around four domains of responsibility, ensuring continuous oversight and actionable insights into cyber risks. It is supported by documented methodologies and scientific bodies for threat intelligence and risk quantification.",
+      "evidence": [
+        {
+          "page": 118,
+          "quote": "Launched in 2024, the Cyber Risk Management Strategy applies enterprise-wide, ensuring cyber risks are systematically identified, assessed, communicated, and mitigated at the appropriate organisational levels."
+        },
+        {
+          "page": 118,
+          "quote": "The strategy is structured around four distinct domains of responsibility: Strategic cyber risk management, Customer cyber risk management, Manufacturing cyber risk management, Operational cyber risk management."
+        }
+      ]
+    }
+  ]
+}

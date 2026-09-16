@@ -8,11 +8,8 @@ from pathlib import Path
 from src.risk_pipeline.models import (
     Evidence,
     ExtractionResult,
-    ParsedPage,
-    ParsedSection,
     Risk,
     RiskCategory,
-    SectionSpec,
 )
 
 
@@ -92,13 +89,6 @@ class TestRiskModels(unittest.TestCase):
             self.assertEqual(len(loaded_res), 1)
             self.assertEqual(loaded_res[0].title, "Cyber Attacks")
             self.assertEqual(loaded_res[0].category, RiskCategory.CYBER)
-
-            # Test JSONL save/load
-            jsonl_file = tmp_path / "risks.jsonl"
-            res.save_jsonl(jsonl_file)
-            loaded_jsonl = ExtractionResult.from_file(jsonl_file)
-            self.assertEqual(len(loaded_jsonl), 1)
-            self.assertEqual(loaded_jsonl[0].title, "Cyber Attacks")
 
             # Test markdown representation
             md = res._repr_markdown_()

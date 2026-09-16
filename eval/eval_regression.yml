@@ -1,0 +1,135 @@
+category_accuracy: 1.0
+details:
+  matched_count: 13
+  matched_details:
+  - category_match: true
+    expected_mitigation: true
+    extracted_category: geopolitical
+    extracted_mitigation: monitoring global developments, regional manufacturing footprint,
+      commercial discipline, indexation, financial hedging
+    golden_category: geopolitical
+    golden_id: risk_geopolitical_p51
+    golden_title: Geopolitical and Regulatory Framework
+    matched_title: Geopolitical and Regulatory Framework
+    mitigation_match: true
+  - category_match: true
+    expected_mitigation: true
+    extracted_category: operational
+    extracted_mitigation: project governance, planning functions, continuous alignment,
+      scalable manufacturing capacity, coordination with suppliers
+    golden_category: operational
+    golden_id: risk_project_execution_p51
+    golden_title: Project Execution
+    matched_title: Project Execution
+    mitigation_match: true
+  - category_match: true
+    expected_mitigation: true
+    extracted_category: cyber
+    extracted_mitigation: cyber security services, navigate cyber risks, industry
+      requirements
+    golden_category: cyber
+    golden_id: risk_cyber_attacks_p51
+    golden_title: Cyber Attacks
+    matched_title: Cyber Attacks
+    mitigation_match: true
+  - category_match: true
+    expected_mitigation: true
+    extracted_category: climate
+    extracted_mitigation: low emission materials
+    golden_category: climate
+    golden_id: risk_climate_mitigation_p71
+    golden_title: Climate Change Mitigation
+    matched_title: Climate Change Mitigation
+    mitigation_match: true
+  - category_match: true
+    expected_mitigation: false
+    extracted_category: climate
+    extracted_mitigation: null
+    golden_category: climate
+    golden_id: risk_biodiversity_p72
+    golden_title: Biodiversity
+    matched_title: Biodiversity
+    mitigation_match: true
+  - category_match: true
+    expected_mitigation: true
+    extracted_category: climate
+    extracted_mitigation: blade circularity solutions
+    golden_category: climate
+    golden_id: risk_non_recyclable_materials_p72
+    golden_title: Non-recyclable Materials
+    matched_title: Non-recyclable Materials
+    mitigation_match: true
+  - category_match: true
+    expected_mitigation: false
+    extracted_category: operational
+    extracted_mitigation: null
+    golden_category: operational
+    golden_id: risk_health_safety_p73
+    golden_title: Health and Safety Incidents
+    matched_title: Health and Safety Incidents
+    mitigation_match: true
+  - category_match: true
+    expected_mitigation: false
+    extracted_category: supply_chain
+    extracted_mitigation: null
+    golden_category: supply_chain
+    golden_id: risk_health_safety_external_workforce_p73
+    golden_title: Health and Safety Incidents
+    matched_title: Health and Safety Incidents
+    mitigation_match: true
+  - category_match: true
+    expected_mitigation: false
+    extracted_category: supply_chain
+    extracted_mitigation: null
+    golden_category: supply_chain
+    golden_id: risk_child_forced_labour_p73
+    golden_title: Child and Forced Labour
+    matched_title: Child and Forced Labour
+    mitigation_match: true
+  - category_match: true
+    expected_mitigation: false
+    extracted_category: operational
+    extracted_mitigation: null
+    golden_category: operational
+    golden_id: risk_land_impacts_p74
+    golden_title: Land-related Impacts
+    matched_title: Land-related Impacts
+    mitigation_match: true
+  - category_match: true
+    expected_mitigation: true
+    extracted_category: market
+    extracted_mitigation: advocacy, political, Paris Agreement, policies
+    golden_category: market
+    golden_id: risk_insufficient_market_conditions_p74
+    golden_title: Insufficient Market Conditions
+    matched_title: Insufficient Market Conditions
+    mitigation_match: true
+  - category_match: true
+    expected_mitigation: false
+    extracted_category: regulatory
+    extracted_mitigation: null
+    golden_category: regulatory
+    golden_id: risk_corruption_bribery_p74
+    golden_title: Corruption and Bribery
+    matched_title: Corruption and Bribery
+    mitigation_match: true
+  - category_match: true
+    expected_mitigation: true
+    extracted_category: climate
+    extracted_mitigation: reducing reliance on fossil fuels, cut emissions in half
+      by 2030
+    golden_category: climate
+    golden_id: risk_energy_consumption_p85
+    golden_title: Energy Consumption
+    matched_title: Energy Consumption
+    mitigation_match: true
+  unmatched_extracted_count: 0
+  unmatched_golden: []
+  unmatched_golden_count: 0
+grounding_score: 1.0
+matched_risks: 13
+mitigation_coverage: 1.0
+passed: true
+recall: 1.0
+total_extracted_risks: 13
+total_golden_risks: 13

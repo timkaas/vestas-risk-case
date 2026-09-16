@@ -1,0 +1,38 @@
+================================================================================
+ 🎯 RISK PIPELINE EVALUATION REPORT
+================================================================================
+📁 Golden Set Source:   /Users/timkaas/Projects/vestas-risk-case/eval/ground-truth.json
+📊 Extracted Input:      Live Extraction Pipeline on /Users/timkaas/Projects/vestas-risk-case/data/VestasAnnualReport2025.pdf (22 items)
+--------------------------------------------------------------------------------
+📈 SUMMARY METRICS:
+  • Total Golden Risks:       13
+  • Total Extracted Risks:    22
+  • Matched Golden Risks:     11 / 13
+  • Risk Extraction Recall:   85.0%  (target >= 75%)
+  • Category Accuracy:        82.0%  (target >= 70%)
+  • Mitigation Coverage:      71.0%  (target >= 70%)
+  • Grounding Score:          91.0%  (target >= 80%)
+--------------------------------------------------------------------------------
+🏁 Overall Status:           ✅ PASSED
+================================================================================
+
+🔍 MATCHED RISKS BREAKDOWN:
+Golden ID                    | Category Match   | Mitigation Match | Matched Title
+-------------------------------------------------------------------------------------
+risk_geopolitical_p51        | ✅ geopolitical   | ✅ Captured       | Geopolitical and Regulatory Risks
+risk_project_execution_p51   | ✅ operational    | ✅ Captured       | Project Execution Risks
+risk_cyber_attacks_p51       | ✅ cyber          | ✅ Captured       | Cybersecurity Risks
+risk_climate_mitigation_p71  | ✅ climate        | ✅ Captured       | Climate Change Mitigation
+risk_non_recyclable_materials_p72 | ✅ climate        | ✅ Captured       | Non-recyclable Materials
+risk_health_safety_p73       | ✅ operational    | ✅ Captured       | Health and Safety Incidents of Own 
+risk_health_safety_external_workforce_p73 | ❌ (supply_chain vs operational) | ✅ Captured       | Health and Safety Incidents of Cont
+risk_child_forced_labour_p73 | ✅ supply_chain   | ✅ Captured       | Child and Forced Labour
+risk_land_impacts_p74        | ❌ (operational vs geopolitical) | ✅ Captured       | Land-related Impacts on Communities
+risk_corruption_bribery_p74  | ✅ regulatory     | ✅ Captured       | Risk of Corruption and Bribery
+risk_energy_consumption_p85  | ✅ climate        | ❌ Missed         | Energy Consumption Impact
+
+⚠️ UNMATCHED GOLDEN RISKS (False Negatives / Missed):
+  - [risk_biodiversity_p72] Biodiversity (Category: climate, Pages: [72])
+  - [risk_insufficient_market_conditions_p74] Insufficient Market Conditions (Category: market, Pages: [74])
+
+================================================================================

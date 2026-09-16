@@ -1,0 +1,25 @@
+{
+  "report": "VestasAnnualReport2025.pdf",
+  "sections": [
+    {
+      "name": "Risk Management",
+      "pages": "50-51",
+      "description": "Enterprise risk governance, geopolitical tensions, execution, and critical asset cyber exposure."
+    },
+    {
+      "name": "Material Risk",
+      "pages": "71-74",
+      "description": "CSRD / ESG double materiality assessment: climate mitigation, circularity, workforce safety, supply chain labour, community impact, bribery."
+    },
+    {
+      "name": "Climate Change",
+      "pages": "84-92",
+      "description": "E1 Climate Change detailed disclosures: GHG emissions, energy consumption, carbon taxes/tariffs, physical risks, transition plans."
+    },
+    {
+      "name": "Cyber Security",
+      "pages": "118",
+      "description": "G1 Governance cyber security reporting, grid disruption risks, IT/OT defense and cyber risk management strategy."
+    }
+  ]
+}

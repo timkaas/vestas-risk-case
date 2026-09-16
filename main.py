@@ -10,26 +10,19 @@ from typing import Optional, Sequence
 
 from dotenv import load_dotenv
 
-# Ensure project root is on sys.path
-PROJECT_ROOT = Path(__file__).resolve().parent
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
+from run_eval import format_evaluation_report
 
-# Load environment variables (.env)
 load_dotenv()
 
-from src.risk_pipeline.config import (
-    DEFAULT_GOLDEN_SET_PATH,
+from src.config import (
     DEFAULT_MAX_CONCURRENCY,
     DEFAULT_MODEL_NAME,
-    DEFAULT_PDF_PATH,
-    DEFAULT_TEMPERATURE,
+    DEFAULT_TEMPERATURE, DEFAULT_SECTIONS_DEF_PATH, DEFAULT_PDF_PATH, DEFAULT_GOLDEN_SET_PATH,
 )
 from src.risk_pipeline.models import ExtractionResult, SectionSpec
-from src.risk_pipeline.parser import parse_page_ranges
+from src.risk_pipeline.parser import ReportParser, parse_report_definition
 from src.risk_pipeline.pipeline import RiskExtractionPipeline
 from src.eval.evaluator import RiskPipelineEvaluator
-from src.eval.run_eval import print_evaluation_report, load_raw_markdown_pages
 
 
 def setup_logging(verbose: bool = False):
@@ -50,8 +43,7 @@ def run_pipeline(
     temperature: float = DEFAULT_TEMPERATURE,
     concurrency: int = DEFAULT_MAX_CONCURRENCY,
     evaluate: bool = False,
-    golden_set_path: Optional[str] = None,
-    markdown_path: Optional[str] = None,
+    golden_set_path: Optional[Path] = None,
     show_progress: bool = True,
     sections: Optional[Sequence[SectionSpec]] = None,
 ) -> ExtractionResult:
@@ -60,16 +52,15 @@ def run_pipeline(
         model_name=model_name,
         temperature=temperature,
         max_concurrency=concurrency,
-        default_sections=sections,
     )
 
     print(f"\n🚀 Running Risk Intelligence Extraction Pipeline...")
     print(f"📄 Target Report: {pdf_path}")
-    print(f"🤖 LLM Model:    {model_name} (temperature: {temperature})")
-    print(f"⚡ Concurrency:  {concurrency}")
+    print(f"🤖 LLM Model:     {model_name} (temperature: {temperature})")
+    print(f"⚡ Concurrency:    {concurrency}")
     if sections:
         section_desc = ", ".join(f"{s.name} (pp. {min(s.page_range)+1}-{max(s.page_range)+1})" if min(s.page_range) != max(s.page_range) else f"{s.name} (p. {min(s.page_range)+1})" for s in sections)
-        print(f"📑 Sections:     {section_desc}")
+        print(f"📑 Sections:      {section_desc}")
     print()
 
     result = pipeline.run(pdf_path=pdf_path, sections=sections, show_progress=show_progress)
@@ -78,33 +69,27 @@ def run_pipeline(
 
     # Save output if path specified
     if output_path:
-        out_file = Path(output_path)
-        if output_format == "jsonl":
-            result.save_jsonl(out_file)
-        elif output_format == "markdown" or output_format == "md":
-            out_file.parent.mkdir(parents=True, exist_ok=True)
-            out_file.write_text(result._repr_markdown_(), encoding="utf-8")
-        else:
-            result.save_json(out_file)
-        print(f"💾 Extracted risks saved to: {out_file} (format: {output_format})")
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        result.save_json(output_path)
+        print(f"💾 Extracted risks saved to: {output_path} (format: {output_format})")
 
     # Run evaluation if requested
-    if evaluate:
+    if evaluate and golden_set_path:
         print("\n📊 Running evaluation against golden dataset...")
         evaluator = RiskPipelineEvaluator(golden_set_path=golden_set_path)
         
-        md_file = Path(markdown_path) if markdown_path else PROJECT_ROOT / "data" / "VestasAnnualReport2025.md"
-        raw_pages = load_raw_markdown_pages(md_file)
+        raw_pages = ReportParser().load_page_text_map(pdf_path, sections)
         
         score = evaluator.evaluate(
             extracted_risks=result.risks,
             raw_markdown_pages=raw_pages,
         )
-        print_evaluation_report(
+        report = format_evaluation_report(
             score=score,
             golden_path=evaluator.golden_set_path,
             source_desc=f"Live Pipeline Run ({len(result.risks)} risks)",
         )
+        print(report)
 
     return result
 
@@ -115,28 +100,21 @@ def main():
     )
     parser.add_argument(
         "--pdf", "-p",
-        type=str,
-        default=str(DEFAULT_PDF_PATH),
+        type=Path,
+        default=DEFAULT_PDF_PATH,
         help=f"Path to input annual report PDF file. (Default: {DEFAULT_PDF_PATH})"
     )
     parser.add_argument(
-        "--sections", "-s",
-        nargs="+",
-        type=str,
-        default=None,
-        help="Page range(s) in the PDF to process (e.g. '50-51' '71-74' '118' or '50-51,71-74,118'). A range can also be a single page."
+        "--input", "-i",
+        type=Path,
+        default=DEFAULT_SECTIONS_DEF_PATH,
+        help=f"Path to a report-definition JSON file containing the target sections. (Default: {DEFAULT_SECTIONS_DEF_PATH})"
     )
     parser.add_argument(
         "--output", "-o",
-        type=str,
+        type=Path,
         default=None,
         help="Optional output file path to save extracted risks (e.g. 'data/extracted_risks.json')"
-    )
-    parser.add_argument(
-        "--format", "-f",
-        choices=["json", "jsonl", "markdown", "md"],
-        default="json",
-        help="Output serialization format (json, jsonl, markdown). Default: json"
     )
     parser.add_argument(
         "--model", "-m",
@@ -164,39 +142,35 @@ def main():
     parser.add_argument(
         "--golden-set", "-g",
         type=str,
-        default=None,
-        help="Path to golden set file (.jsonl or .json) for evaluation."
+        default=DEFAULT_GOLDEN_SET_PATH,
+        help=f"Path to golden set file (.json) for evaluation. (Default: {DEFAULT_GOLDEN_SET_PATH})"
     )
     parser.add_argument(
         "--verbose", "-v",
         action="store_true",
         help="Enable verbose debug logging."
     )
-    parser.add_argument(
-        "--print-md",
-        action="store_true",
-        help="Print full formatted markdown summary of extracted risks to console."
-    )
 
     args = parser.parse_args()
     setup_logging(args.verbose)
 
-    pdf_file = Path(args.pdf)
-    if not pdf_file.exists():
-        print(f"Error: PDF file '{pdf_file}' does not exist.", file=sys.stderr)
+    if not args.pdf.exists():
+        print(f"Error: PDF file '{args.pdf}' does not exist.", file=sys.stderr)
         sys.exit(1)
 
-    parsed_sections = None
-    if args.sections:
-        try:
-            parsed_sections = parse_page_ranges(args.sections)
-        except ValueError as e:
-            parser.error(f"Invalid --sections argument: {e}")
+    if not args.input.exists():
+        print(f"Error: JSON input file '{args.input}' does not exist.", file=sys.stderr)
+        sys.exit(1)
+
+    definition = parse_report_definition(args.input)
+    parsed_sections = definition.sections
+
+    if args.eval and not args.golden_set:
+        parser.error("Error: --golden-set is required when --eval is specified.")
 
     result = run_pipeline(
-        pdf_path=pdf_file,
-        output_path=Path(args.output) if args.output else None,
-        output_format=args.format,
+        pdf_path=args.pdf,
+        output_path=args.output,
         model_name=args.model,
         temperature=args.temperature,
         concurrency=args.concurrency,
@@ -206,7 +180,7 @@ def main():
         sections=parsed_sections,
     )
 
-    if args.print_md:
+    if not args.output:
         print("\n" + result._repr_markdown_())
 
 

@@ -3,11 +3,10 @@ Tests for PDF and Markdown ReportParser.
 """
 
 import unittest
-from pathlib import Path
-from src.risk_pipeline.config import DEFAULT_PDF_PATH
-from src.risk_pipeline.models import ParsedPage, ParsedSection, SectionSpec
-from src.risk_pipeline.parser import ReportParser, format_pages, format_sections, parse_page_ranges
 
+from src.config import DEFAULT_PDF_PATH
+from src.risk_pipeline.models import ParsedPage, SectionSpec
+from src.risk_pipeline.parser import ReportParser, format_pages, parse_page_ranges
 
 class TestReportParser(unittest.TestCase):
     def test_parse_page_ranges_single_pages(self):
@@ -74,17 +73,9 @@ class TestReportParser(unittest.TestCase):
         self.assertIn("=== PDF PAGE 51 ===", formatted)
         self.assertIn("Content of page 50", formatted)
 
-        sec = ParsedSection(
-            name="Risk Management",
-            page_numbers=[50, 51],
-            pages=[p1, p2],
-            formatted_content=formatted,
-        )
-        full_doc = format_sections([sec])
-        self.assertIn("# Risk Management", full_doc)
-        self.assertIn("=== PDF PAGE 50 ===", full_doc)
-
     def test_parser_with_vestas_pdf(self):
+
+
         if not DEFAULT_PDF_PATH.exists():
             self.skipTest(f"PDF not found at {DEFAULT_PDF_PATH}")
 

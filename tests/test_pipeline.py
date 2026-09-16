@@ -3,11 +3,9 @@ Tests for RiskExtractionPipeline and Extractor components.
 """
 
 import unittest
-from unittest.mock import MagicMock
 from src.risk_pipeline.models import (
     Evidence,
     ExtractionResult,
-    ParsedPage,
     ParsedSection,
     Risk,
     RiskCategory,
@@ -54,43 +52,15 @@ class TestPipeline(unittest.TestCase):
         self.assertEqual(aggregated.risks[0].title, "Cyber Attack Risk")
         self.assertEqual(aggregated.risks[1].title, "GHG Emissions Impact")
 
-    def test_pipeline_with_mock_extractor(self):
-        mock_extractor = MagicMock(spec=RiskExtractor)
-        mock_risk = Risk(
-            title="Project Execution",
-            description="Risks around project execution.",
-            category=RiskCategory.OPERATIONAL,
-            section="Risk Management",
-            pages=[50],
-            mitigation="Quality gates",
-            evidence=[Evidence(page=50, quote="Project execution involves...")],
-        )
-        mock_extractor.extract_batch.return_value = [ExtractionResult(risks=[mock_risk])]
-
-        pipeline = RiskExtractionPipeline(extractor=mock_extractor)
-        dummy_sec = ParsedSection(
-            name="Risk Management",
-            page_numbers=[50],
-            pages=[ParsedPage(page_number=50, text="Dummy text")],
-            formatted_content="=== PDF PAGE 50 ===\n\nDummy text",
-        )
-
-        result = pipeline.run_from_sections([dummy_sec])
-        self.assertEqual(len(result.risks), 1)
-        self.assertEqual(result.risks[0].title, "Project Execution")
-        self.assertEqual(result.risks[0].category, RiskCategory.OPERATIONAL)
-
     def test_extractor_payload_preparation(self):
         sec = ParsedSection(
             name="Climate Change",
             page_numbers=[85, 86],
             pages=[],
-            formatted_content="Content text",
         )
         payload = RiskExtractor._prepare_section_payload(sec)
         self.assertEqual(payload["section_name"], "Climate Change")
         self.assertEqual(payload["page_numbers"], [85, 86])
-        self.assertEqual(payload["content"], "Content text")
 
 
 if __name__ == "__main__":

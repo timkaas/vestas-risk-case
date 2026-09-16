@@ -9,6 +9,7 @@ from src.risk_pipeline.models import (
     ParsedSection,
     Risk,
     RiskCategory,
+    ReportDefinition,
     SectionSpec,
 )
 from src.risk_pipeline.parser import (
@@ -17,6 +18,7 @@ from src.risk_pipeline.parser import (
     format_pages,
     format_sections,
     parse_page_ranges,
+    parse_report_definition,
 )
 from src.risk_pipeline.extractor import RiskExtractor, build_extraction_chain, EXTRACTION_PROMPT
 from src.risk_pipeline.pipeline import RiskExtractionPipeline
@@ -27,11 +29,13 @@ __all__ = [
     "Risk",
     "ExtractionResult",
     "SectionSpec",
+    "ReportDefinition",
     "ParsedPage",
     "ParsedSection",
     "ReportParser",
     "PDFReportParser",
     "parse_page_ranges",
+    "parse_report_definition",
     "format_pages",
     "format_sections",
     "RiskExtractor",
