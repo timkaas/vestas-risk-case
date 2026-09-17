@@ -49,10 +49,10 @@ def source_pages(baseline_risks: list[Risk]) -> dict[int, str]:
 
 
 def test_baseline_evaluation_is_approved(
-    evaluator: RiskPipelineEvaluator,
-    baseline_risks: list[Risk],
-    source_pages: dict[int, str],
-    data_regression: pytest.RegressionFixture,
+        evaluator: RiskPipelineEvaluator,
+        baseline_risks: list[Risk],
+        source_pages: dict[int, str],
+        data_regression: pytest.RegressionFixture,
 ) -> None:
     """Detect unintended changes to the complete approved evaluator result."""
     score = evaluator.evaluate(baseline_risks, source_pages)
@@ -97,12 +97,12 @@ def corrupt_model_output(risks: list[Risk]) -> list[Risk]:
     ],
 )
 def test_evaluator_rejects_known_regressions(
-    evaluator: RiskPipelineEvaluator,
-    baseline_risks: list[Risk],
-    source_pages: dict[int, str],
-    mutate: Callable[[list[Risk]], list[Risk]],
-    metric: str,
-    maximum: float,
+        evaluator: RiskPipelineEvaluator,
+        baseline_risks: list[Risk],
+        source_pages: dict[int, str],
+        mutate: Callable[[list[Risk]], list[Risk]],
+        metric: str,
+        maximum: float,
 ) -> None:
     """Each realistic degradation must trip the corresponding quality gate."""
     score = evaluator.evaluate(mutate(baseline_risks), source_pages)
@@ -111,9 +111,9 @@ def test_evaluator_rejects_known_regressions(
 
 
 def test_mitigation_must_contain_a_golden_keyword(
-    evaluator: RiskPipelineEvaluator,
-    baseline_risks: list[Risk],
-    source_pages: dict[int, str],
+        evaluator: RiskPipelineEvaluator,
+        baseline_risks: list[Risk],
+        source_pages: dict[int, str],
 ) -> None:
     """A generic mitigation must not count as the expected mitigation."""
     score = evaluator.evaluate(
@@ -130,9 +130,9 @@ def test_mitigation_must_contain_a_golden_keyword(
 
 
 def test_mitigation_keyword_matching_accepts_hyphen_variants(
-    evaluator: RiskPipelineEvaluator,
-    baseline_risks: list[Risk],
-    source_pages: dict[int, str],
+        evaluator: RiskPipelineEvaluator,
+        baseline_risks: list[Risk],
+        source_pages: dict[int, str],
 ) -> None:
     risks = [
         risk.model_copy(update={"mitigation": "Offering low-emission materials."})

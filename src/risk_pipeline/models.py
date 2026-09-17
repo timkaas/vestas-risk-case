@@ -52,12 +52,15 @@ class Evidence(BaseModel):
 class Risk(BaseModel):
     """Structured corporate risk entry extracted from report."""
     title: str = Field(description="Short, descriptive title of the risk")
-    description: str = Field(description="2-3 sentence description summarizing the risk context, drivers, and potential impact")
+    description: str = Field(
+        description="2-3 sentence description summarizing the risk context, drivers, and potential impact")
     category: RiskCategory = Field(description="Categorization of the risk according to standard taxonomies")
     section: str = Field(description="Report section name where found (e.g. 'Risk Management', 'Climate Change')")
     pages: List[int] = Field(description="1-based page numbers where this risk is discussed")
-    mitigation: Optional[str] = Field(None, description="Stated corporate mitigation actions, controls, or transition plans, if any")
-    evidence: List[Evidence] = Field(default_factory=list, description="Evidence quotes and citations supporting the risk")
+    mitigation: Optional[str] = Field(None,
+                                      description="Stated corporate mitigation actions, controls, or transition plans, if any")
+    evidence: List[Evidence] = Field(default_factory=list,
+                                     description="Evidence quotes and citations supporting the risk")
 
     @field_validator("mitigation", mode="before")
     @classmethod
@@ -100,7 +103,6 @@ class ExtractionResult(BaseModel):
         path.write_text(self.to_json(indent=indent), encoding="utf-8")
         return path
 
-
     @classmethod
     def from_file(cls, file_path: Path) -> ExtractionResult:
         """Load ExtractionResult from a JSON file."""
@@ -119,7 +121,8 @@ class ExtractionResult(BaseModel):
             pages_str = ", ".join(map(str, r.pages)) if r.pages else "N/A"
             category_val = r.category.value if hasattr(r.category, "value") else str(r.category)
             mitigation_block = f">\n> 🛡️ **Mitigation:** {r.mitigation}" if r.mitigation else ""
-            evidence_lines = "\n".join(f'  - Page {e.page}: "{e.quote}"' for e in r.evidence) if r.evidence else "  - *No evidence quotes provided*"
+            evidence_lines = "\n".join(f'  - Page {e.page}: "{e.quote}"' for e in
+                                       r.evidence) if r.evidence else "  - *No evidence quotes provided*"
             md_output.append(
                 f"#### {i}. {r.title}\n"
                 f"- **Category:** `{category_val.upper()}`\n"
@@ -130,6 +133,7 @@ class ExtractionResult(BaseModel):
                 f"{mitigation_block}"
             )
         return "\n\n---\n\n".join(md_output)
+
 
 @dataclass(frozen=True)
 class SectionSpec:
@@ -150,12 +154,14 @@ class ReportDefinition:
     sections: List[SectionSpec]
     source_path: Optional[Path] = None
 
+
 @dataclass(frozen=True)
 class ParsedPage:
     """Parsed single page content and metadata."""
     page_number: int
     text: str
     metadata: Dict[str, Any] = field(default_factory=dict)
+
 
 @dataclass(frozen=True)
 class ParsedSection:

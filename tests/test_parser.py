@@ -8,6 +8,7 @@ from src.config import DEFAULT_PDF_PATH
 from src.risk_pipeline.models import ParsedPage, SectionSpec
 from src.risk_pipeline.parser import ReportParser, format_pages, parse_page_ranges
 
+
 class TestReportParser(unittest.TestCase):
     def test_parse_page_ranges_single_pages(self):
         # Single page string
@@ -74,7 +75,6 @@ class TestReportParser(unittest.TestCase):
         self.assertIn("Content of page 50", formatted)
 
     def test_parser_with_vestas_pdf(self):
-
 
         if not DEFAULT_PDF_PATH.exists():
             self.skipTest(f"PDF not found at {DEFAULT_PDF_PATH}")

@@ -36,16 +36,16 @@ def setup_logging(verbose: bool = False):
 
 
 def run_pipeline(
-    pdf_path: Path,
-    output_path: Optional[Path] = None,
-    output_format: str = "json",
-    model_name: str = DEFAULT_MODEL_NAME,
-    temperature: float = DEFAULT_TEMPERATURE,
-    concurrency: int = DEFAULT_MAX_CONCURRENCY,
-    evaluate: bool = False,
-    golden_set_path: Optional[Path] = None,
-    show_progress: bool = True,
-    sections: Optional[Sequence[SectionSpec]] = None,
+        pdf_path: Path,
+        output_path: Optional[Path] = None,
+        output_format: str = "json",
+        model_name: str = DEFAULT_MODEL_NAME,
+        temperature: float = DEFAULT_TEMPERATURE,
+        concurrency: int = DEFAULT_MAX_CONCURRENCY,
+        evaluate: bool = False,
+        golden_set_path: Optional[Path] = None,
+        show_progress: bool = True,
+        sections: Optional[Sequence[SectionSpec]] = None,
 ) -> ExtractionResult:
     """Run risk extraction pipeline and optionally save and evaluate output."""
     pipeline = RiskExtractionPipeline(
@@ -59,7 +59,9 @@ def run_pipeline(
     print(f"🤖 LLM Model:     {model_name} (temperature: {temperature})")
     print(f"⚡ Concurrency:    {concurrency}")
     if sections:
-        section_desc = ", ".join(f"{s.name} (pp. {min(s.page_range)+1}-{max(s.page_range)+1})" if min(s.page_range) != max(s.page_range) else f"{s.name} (p. {min(s.page_range)+1})" for s in sections)
+        section_desc = ", ".join(
+            f"{s.name} (pp. {min(s.page_range) + 1}-{max(s.page_range) + 1})" if min(s.page_range) != max(
+                s.page_range) else f"{s.name} (p. {min(s.page_range) + 1})" for s in sections)
         print(f"📑 Sections:      {section_desc}")
     print()
 
@@ -77,9 +79,9 @@ def run_pipeline(
     if evaluate and golden_set_path:
         print("\n📊 Running evaluation against golden dataset...")
         evaluator = RiskPipelineEvaluator(golden_set_path=golden_set_path)
-        
+
         raw_pages = ReportParser().load_page_text_map(pdf_path, sections)
-        
+
         score = evaluator.evaluate(
             extracted_risks=result.risks,
             raw_markdown_pages=raw_pages,

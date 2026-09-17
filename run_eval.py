@@ -17,6 +17,7 @@ from src.eval.evaluator import RiskPipelineEvaluator, EvalScore
 from src.risk_pipeline.models import ExtractionResult
 from src.risk_pipeline.parser import ReportParser, parse_report_definition
 
+
 def format_evaluation_report(score: EvalScore, golden_path: pl.Path, source_desc: str) -> str:
     """Build the human-readable report used for both stdout and saved artifacts."""
     lines = [
@@ -36,10 +37,10 @@ def format_evaluation_report(score: EvalScore, golden_path: pl.Path, source_desc
         f"  • Grounding Score:          {score.grounding_score * 100:.1f}%  (target >= 80%)",
         "-" * 80,
     ]
-    
+
     status_str = "✅ PASSED" if score.passed else "❌ FAILED (Regression Detected)"
     lines.extend([f"🏁 Overall Status:           {status_str}", "=" * 80])
-    
+
     matched_details = score.details.get("matched_details", [])
     if matched_details:
         lines.extend([
@@ -49,7 +50,8 @@ def format_evaluation_report(score: EvalScore, golden_path: pl.Path, source_desc
             "-" * 85,
         ])
         for d in matched_details:
-            cat_status = "✅ " + str(d['extracted_category']) if d['category_match'] else f"❌ ({d['golden_category']} vs {d['extracted_category']})"
+            cat_status = "✅ " + str(d['extracted_category']) if d[
+                'category_match'] else f"❌ ({d['golden_category']} vs {d['extracted_category']})"
             mit_status = "✅ Captured" if d['mitigation_match'] else "❌ Missed"
             lines.append(f"{d['golden_id']:<28} | {cat_status:<16} | {mit_status:<16} | {d['matched_title'][:35]}")
 
@@ -57,7 +59,8 @@ def format_evaluation_report(score: EvalScore, golden_path: pl.Path, source_desc
     if unmatched_golden:
         lines.extend(["", "⚠️ UNMATCHED GOLDEN RISKS (False Negatives / Missed):"])
         for ug in unmatched_golden:
-            lines.append(f"  - [{ug['golden_id']}] {ug['golden_title']} (Category: {ug['category']}, Pages: {ug['pages']})")
+            lines.append(
+                f"  - [{ug['golden_id']}] {ug['golden_title']} (Category: {ug['category']}, Pages: {ug['pages']})")
 
     lines.extend(["", "=" * 80])
     return "\n".join(lines)
@@ -151,6 +154,7 @@ def main():
 
     if not score.passed:
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

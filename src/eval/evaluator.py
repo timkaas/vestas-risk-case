@@ -18,10 +18,12 @@ class GoldenData:
     key_mitigation_keywords: Optional[List[str]] = None
     evidence: Optional[List[Dict[str, Any]]] = None
 
+
 def load_from_json(file_path) -> List[GoldenData]:
     with open(file_path, 'r') as file:
         reader = json.load(file)
     return [GoldenData(**data) for data in reader]
+
 
 @dataclass(frozen=True)
 class EvalScore:
@@ -47,9 +49,9 @@ class RiskPipelineEvaluator:
         return " ".join(text.lower().replace("-", " ").split())
 
     def evaluate(
-        self,
-        extracted_risks: List[Risk],
-        raw_markdown_pages: Dict[int, str]
+            self,
+            extracted_risks: List[Risk],
+            raw_markdown_pages: Dict[int, str]
     ) -> EvalScore:
 
         matched_count = 0
@@ -57,7 +59,7 @@ class RiskPipelineEvaluator:
         captured_mitigations = 0
         total_quotes = 0
         grounded_quotes = 0
-        
+
         matched_details = []
         unmatched_golden = []
 
@@ -70,7 +72,7 @@ class RiskPipelineEvaluator:
                     ev_page = ev.page
                     ev_quote = ev.quote.strip()
                     page_text = raw_markdown_pages.get(ev_page, "") if ev_page is not None else ""
-                    
+
                     if ev_quote:
                         quote_snippet = ev_quote[:30].lower()
                         if page_text and quote_snippet in page_text.lower():
@@ -98,8 +100,8 @@ class RiskPipelineEvaluator:
 
                 # Check keyword overlap
                 kw_matches = sum(1 for kw in gold.title_keywords if kw and (
-                    kw.lower() in pred_title or pred_title in kw.lower() or 
-                    kw.lower().replace(" ", "").replace("-", "") in pred_norm
+                        kw.lower() in pred_title or pred_title in kw.lower() or
+                        kw.lower().replace(" ", "").replace("-", "") in pred_norm
                 ))
                 if kw_matches == 0:
                     continue
@@ -119,7 +121,8 @@ class RiskPipelineEvaluator:
                 used_extracted_indices.add(best_idx)
                 matched_count += 1
 
-                pred_cat = matched_risk.category.value if hasattr(matched_risk.category, "value") else str(matched_risk.category).lower()
+                pred_cat = matched_risk.category.value if hasattr(matched_risk.category, "value") else str(
+                    matched_risk.category).lower()
                 gold_cat = gold.category.value if hasattr(gold.category, "value") else str(gold.category).lower()
                 cat_match = (pred_cat == gold_cat)
                 if cat_match:
@@ -132,8 +135,8 @@ class RiskPipelineEvaluator:
                     )
                     mitigation_keywords = gold.key_mitigation_keywords or []
                     if mitigation and any(
-                        self._normalize_mitigation_text(keyword) in mitigation
-                        for keyword in mitigation_keywords
+                            self._normalize_mitigation_text(keyword) in mitigation
+                            for keyword in mitigation_keywords
                     ):
                         captured_mitigations += 1
                         mitigation_match = True
@@ -162,7 +165,7 @@ class RiskPipelineEvaluator:
         total_gold = len(self.golden_set)
         recall = matched_count / total_gold if total_gold > 0 else 0.0
         cat_acc = correct_categories / matched_count if matched_count > 0 else 0.0
-        
+
         expected_mitigations_total = sum(1 for g in self.golden_set if g.expected_mitigation)
         mit_cov = captured_mitigations / expected_mitigations_total if expected_mitigations_total > 0 else 1.0
 

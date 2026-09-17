@@ -48,9 +48,9 @@ EXTRACTION_PROMPT = ChatPromptTemplate.from_messages([
 
 
 def build_extraction_chain(
-    model_name: str = DEFAULT_MODEL_NAME,
-    temperature: float = DEFAULT_TEMPERATURE,
-    timeout: int = DEFAULT_REQUEST_TIMEOUT,
+        model_name: str = DEFAULT_MODEL_NAME,
+        temperature: float = DEFAULT_TEMPERATURE,
+        timeout: int = DEFAULT_REQUEST_TIMEOUT,
 ) -> Runnable:
     """
     Construct a LangChain structured extraction runnable for ExtractionResult.
@@ -82,10 +82,10 @@ class RiskExtractor:
     """
 
     def __init__(
-        self,
-        model_name: str = DEFAULT_MODEL_NAME,
-        temperature: float = DEFAULT_TEMPERATURE,
-        max_concurrency: int = DEFAULT_MAX_CONCURRENCY,
+            self,
+            model_name: str = DEFAULT_MODEL_NAME,
+            temperature: float = DEFAULT_TEMPERATURE,
+            max_concurrency: int = DEFAULT_MAX_CONCURRENCY,
     ):
         """
         Initialize RiskExtractor.
@@ -113,9 +113,9 @@ class RiskExtractor:
         }
 
     def extract_batch(
-        self,
-        sections: Sequence[ParsedSection],
-        max_concurrency: Optional[int] = None,
+            self,
+            sections: Sequence[ParsedSection],
+            max_concurrency: Optional[int] = None,
     ) -> List[ExtractionResult]:
         """
         Extract risks from multiple sections in parallel batches.
@@ -137,8 +137,8 @@ class RiskExtractor:
         )
 
         return raw_results
-        #risks = [rr.model_dump() for r in raw_results for rr in r.risks]
-        #return ExtractionResult(risks=risks)
+        # risks = [rr.model_dump() for r in raw_results for rr in r.risks]
+        # return ExtractionResult(risks=risks)
 
         results: List[ExtractionResult] = []
         for r in raw_results:

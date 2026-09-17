@@ -56,15 +56,16 @@ def format_pages(pages: Sequence[ParsedPage]) -> str:
 def format_sections(sections: Sequence[ParsedSection]) -> str:
     return "\n\n".join(f"# {section.name}\n\n{section.formatted_content()}" for section in sections)
 
+
 class ReportParser:
     def __init__(self, split=False):
         self.split = split
 
     def parse_pdf_sections(
-        self,
-        pdf_path: Union[str, Path],
-        sections: Sequence[SectionSpec],
-        show_progress: bool = False,
+            self,
+            pdf_path: Union[str, Path],
+            sections: Sequence[SectionSpec],
+            show_progress: bool = False,
     ) -> List[ParsedSection]:
         assert not self.split
 
@@ -81,7 +82,8 @@ class ReportParser:
         it = iter(md)
         return [
             ParsedSection(name=section.name, pages=[
-                ParsedPage(page_number=chunk['metadata']['page_number'], text=chunk["text"], metadata=chunk.get("metadata", {}))
+                ParsedPage(page_number=chunk['metadata']['page_number'], text=chunk["text"],
+                           metadata=chunk.get("metadata", {}))
                 for chunk in list(itertools.islice(it, len(section.page_range)))
             ], page_numbers=[p + 1 for p in section.page_range])
             for section in sections

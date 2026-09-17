@@ -31,10 +31,10 @@ class RiskExtractionPipeline:
     """
 
     def __init__(
-        self,
-        model_name: str = DEFAULT_MODEL_NAME,
-        temperature: float = DEFAULT_TEMPERATURE,
-        max_concurrency: int = DEFAULT_MAX_CONCURRENCY,
+            self,
+            model_name: str = DEFAULT_MODEL_NAME,
+            temperature: float = DEFAULT_TEMPERATURE,
+            max_concurrency: int = DEFAULT_MAX_CONCURRENCY,
     ):
         """
         Initialize the Risk Extraction Pipeline.
@@ -76,10 +76,10 @@ class RiskExtractionPipeline:
         return ExtractionResult(risks=combined_risks)
 
     def run(
-        self,
-        pdf_path: Path,
-        sections: Optional[Sequence[SectionSpec]] = None,
-        show_progress: bool = False,
+            self,
+            pdf_path: Path,
+            sections: Optional[Sequence[SectionSpec]] = None,
+            show_progress: bool = False,
     ) -> ExtractionResult:
         """
         Execute the full extraction pipeline synchronously on a PDF report.
