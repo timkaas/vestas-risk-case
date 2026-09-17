@@ -257,3 +257,4 @@ cython_debug/
 #.idea/
 
 /:memory:.ses
+doc/
