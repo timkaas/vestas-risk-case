@@ -67,7 +67,7 @@ uv run ./run_eval.py --results ./eval/runs/report.txt
 ```
 ---
 
-### 3. Run the Regression Testing Suite (Deliverable 4)
+### 3. Run the Regression Testing Suite
 Demonstrates the evaluation harness detecting realistic degradation modes:
 
 ```bash
