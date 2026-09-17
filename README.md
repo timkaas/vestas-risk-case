@@ -57,10 +57,10 @@ uv run main.py --pdf ./path/to/local/report.pdf -input ./path/to/local/report.js
 Evaluate existing extraction results against the curated golden dataset:
 
 ```bash
-uv run ./run_eval.py -o ./eval/runs/baseline-report.txt
-uv run ./run_eval.py -o ./eval/runs/gpt-41-nano-report.txt -m gpt-4.1-nano-2025-04-14
-uv run ./run_eval.py -o ./eval/runs/gpt-41-mini-report.txt -m gpt-4.1-mini-2025-04-14
-uv run ./run_eval.py -o ./eval/runs/temp-1-report.txt -t 1
+uv run ./run_eval.py --output ./eval/runs/baseline-report.txt
+uv run ./run_eval.py --output ./eval/runs/gpt-41-nano-report.txt --model gpt-4.1-nano-2025-04-14
+uv run ./run_eval.py --output ./eval/runs/gpt-41-mini-report.txt --model gpt-4.1-mini-2025-04-14
+uv run ./run_eval.py --output ./eval/runs/temp-1-report.txt --temperature 1
 
 # Run an evaluation on an existing extraction result
 uv run ./run_eval.py --results ./eval/runs/report.txt
