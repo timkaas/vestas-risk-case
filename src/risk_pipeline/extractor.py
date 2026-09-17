@@ -68,6 +68,7 @@ def build_extraction_chain(
         "model": model_name,
         "temperature": temperature,
         "timeout": timeout,
+        "seed": 42
     }
 
     llm = ChatOpenAI(**llm_kwargs)

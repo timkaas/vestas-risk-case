@@ -2,6 +2,12 @@
 
 ### Somewhat prioritized:
 
+- I see quite a variation in the number of risks extracted between runs. Some 
+non-determinism is expected on cloud models due to hardware-/model-version differences. 
+But the current span is too big (observed between 18 and 24 found risks between runs). 
+Maybe a splitting strategy could help here, to decrease input size and pinpoint segments 
+containing risks.
+
 - Expand on the golden set to include all risks in the report, catching hallucinations, 
 and allowing for a precision metric.
 
